@@ -37,7 +37,7 @@ make install
 
 ##### Copy the executable file in /usr/bin directory:
 ```bash
-cd /src
+cd src/
 
 chmod +x srm
 
