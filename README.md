@@ -3,6 +3,8 @@
 ### Antiforensics script for security and privacy by Brainfuck & N4d4
 
 
+
+
 ---------------------------------------------------------------------
 #### Install instructions
 -------------------------
@@ -12,6 +14,8 @@
 apt-get install bleachbit 
 ```
 ##### if you don't know how bleachbit work you can read the documentation here: http://bleachbit.sourceforge.net/
+
+
 
 
 ##### 2 - Install srm 
@@ -31,7 +35,7 @@ make
 make install
 ```
 
-##### Copy the executable file in /usr/bin directory
+##### Copy the executable file in /usr/bin directory:
 ```bash
 cd /src
 
@@ -42,7 +46,7 @@ cp srm /usr/bin
 
 ##### 3 - Start the script  
 
-##### Give permits to .sh file and start cleaner 
+##### Give permits to .sh file and start cleaner:
 ```bash
 chmod +x kalieraser.sh
 
