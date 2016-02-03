@@ -1,9 +1,9 @@
 ### Kalieraser v1.1  
 
 ### Antiforensics script for security and privacy by Brainfuck & N4d4
+
+
 ---------------------------------------------------------------------
-
-
 #### Install instructions
 -------------------------
 
@@ -18,7 +18,7 @@ apt-get install bleachbit
 
 ##### Secure RM is already present in the program folder, you can check the last version here: http://sourceforge.net/projects/srm/files/1.2.15/
 
-##### Extract and install 
+##### Extract and install: 
 ```bash
 tar -zxvf srm-1.2.15.tar.gz
 
@@ -49,4 +49,4 @@ chmod +x kalieraser.sh
 ./kalieraser.sh 
 ```
 
-###### I Really say thanks to my friend N4d4 for his precious advice in the bash scripting 
+##### I Really say thanks to my friend N4d4 for his precious advice in the bash scripting 
