@@ -10,7 +10,7 @@
 #  							       							   						           	
 #  Descr: Antiforensics Script for Debian Kali Linux           
 #     							                               					  		   	
-#  Dependencies: Bleachbit > http://bleachbit.sourceforge.net/ 					  
+#  Dependencies: Bleachbit > http://bleachbit.sourceforge.net/					  
 #                                                                  
 #  Secure RM > http://sourceforge.net/projects/srm/ 	       											          
 #                                                              
