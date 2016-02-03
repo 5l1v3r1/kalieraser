@@ -1,20 +1,20 @@
 #!/bin/bash
 
-################################################################
-#							       							   #						           	  
-#  Script: kalieraser.sh                                       #
-#  							       							   #						           	
-#  Version: 1.1 [11-8-2015] 						           #
-# 															   #
-#  Dev: Brainfuck - N4d4              		                   #	           
-#  							       							   #						           	
-#  Descr: Antiforensics Script for Debian Kali Linux           #
-#     							                               #					  		   	
-#  Dependencies: Bleachbit > http://bleachbit.sourceforge.net/ #					  
-#                                                              #     
-#  Secure RM > http://sourceforge.net/projects/srm/ 	       #											          
-#                                                              #
-################################################################
+###############################################################
+#							       							   						           	  
+#  Script: kalieraser.sh                                       
+#  							       							   						           	
+#  Version: 1.1 [11-8-2015] 						           
+# 															   
+#  Dev: Brainfuck - N4d4              		                   	           
+#  							       							   						           	
+#  Descr: Antiforensics Script for Debian Kali Linux           
+#     							                               					  		   	
+#  Dependencies: Bleachbit > http://bleachbit.sourceforge.net/ 					  
+#                                                                  
+#  Secure RM > http://sourceforge.net/projects/srm/ 	       											          
+#                                                              
+##############################################################
 
 # Define Colors
 export GREEN='\033[1;92m'
