@@ -45,7 +45,7 @@ cp srm /usr/bin
 
 ##### 3 - Start the script  
 
-##### Give permits to .sh file and start cleaner:
+##### Chmod and start cleaner:
 ```bash
 chmod +x kalieraser.sh
 
