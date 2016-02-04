@@ -5,22 +5,21 @@
 
 
 
----------------------------------------------------------------------
 #### Install instructions
--------------------------
+
 
 ##### 1 - Install Bleachbit
 ```bash
 apt-get install bleachbit 
 ```
-##### if you don't know how bleachbit work you can read the documentation here: http://bleachbit.sourceforge.net/
+###### if you don't know how bleachbit work you can read the documentation here: http://bleachbit.sourceforge.net/
 
 
 
 
 ##### 2 - Install srm 
 
-##### Secure RM is already present in the program folder, you can check the last version here: http://sourceforge.net/projects/srm/files/1.2.15/
+###### Secure RM is already present in the program folder, you can check the last version here: http://sourceforge.net/projects/srm/files/1.2.15/
 
 ##### Extract and install: 
 ```bash
