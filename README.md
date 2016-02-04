@@ -1,6 +1,8 @@
-### Kalieraser v1.1  
+## Kalieraser v1.1  
 
 ### Antiforensics script for security and privacy by Brainfuck & N4d4
+
+### OS: Kali Linux 
 
 
 
