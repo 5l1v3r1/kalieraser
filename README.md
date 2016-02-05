@@ -1,13 +1,10 @@
-## Kalieraser v1.1  
+### Kalieraser v1.1  
 
-### Antiforensics script for security and privacy 
-
-### OS: Kali Linux 
+#### Antiforensics script for Kali Linux
 
 
 
-
-#### Install instructions
+#### Instructions
 
 
 ##### 1 - Install Bleachbit
@@ -54,4 +51,4 @@ chmod +x kalieraser.sh
 ./kalieraser.sh 
 ```
 
-##### I Really say thanks to my friend N4d4 for his precious advice in the bash scripting 
+###### I Really say thanks to my friend N4d4 for his precious advice in the bash scripting 
