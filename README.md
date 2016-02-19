@@ -4,7 +4,7 @@
 ##### Version: 2.0 - 19/02/2016
 ##### Antiforensics script for security and privacy
 ##### Operative System: Kali Linux 
-##### Descr: This tool erase all the system's logs and data of tools in the list, these files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
+##### Description: This tool erase all the system's logs and data of tools in the list, these files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
 
 
 
