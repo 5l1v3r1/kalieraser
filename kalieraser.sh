@@ -43,8 +43,7 @@ EOF
 
 # checkroot
 function checkroot {
-	if [ "$(id -u)" -ne 0 ]; 
-	then
+	if [ "$(id -u)" -ne 0 ]; then
 		echo -e "\n$RED[!] Please run this script as a root!$RESETCOLOR\n" >&2
 		exit 1
 	fi
@@ -107,17 +106,14 @@ function securerm {
 	
 	# root and user logs 
 	IFS=$'\n'
-	for username in `echo -e "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"`; 
-	do
+	for username in `echo -e "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"`; do
 		echo -e "$CYAN[info] $GREEN Deleting logs of $WHITE$username $RESETCOLOR\n"
 		cd $username
 		sleep 2
 		
 		IFS=$','
-		for i in ${logfolder[@]}; 
-		do
-			if [ "$(ls -A "$i" 2>/dev/null | wc -l)" -gt 0 ]; 
-			then
+		for i in ${logfolder[@]}; do
+			if [ "$(ls -A "$i" 2>/dev/null | wc -l)" -gt 0 ]; then
 				# command srm -D --dod --> overwrite with 7 US DoD compliant passes
 				srm -D -R "$i" 2>/dev/null
 				echo -e "$CYAN[+] $GREEN deleted: $WHITE $i $RESETCOLOR"
