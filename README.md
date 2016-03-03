@@ -21,7 +21,7 @@ apt-get install bleachbit
 
 ##### 2 - Install srm 
 
-##### Secure RM is already present in the program folder, you can check the latest version here: http://sourceforge.net/projects/srm/files/, anyway when the new version of srm are released, the git repository will be updated.
+##### Secure RM is present in the program folder, you can check the latest version here: http://sourceforge.net/projects/srm/files/, anyway when the new version of srm are released, the git repository will be updated.
 
 
 ##### Extract and install: 
