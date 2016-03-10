@@ -123,8 +123,8 @@ function securerm {
 }
 
 
-# delete the last crumbs on system  
-function lastcrumbs {
+# delete the last logs on system  
+function lastlogs {
 	# bleachbit don't remove root bash_history if you don't run command from sudo
 	# deleting for you with this function 
 	echo -e ""
@@ -186,7 +186,7 @@ function start {
 	
 	runbleachbit
 	securerm 
-	lastcrumbs
+	lastlogs
 	systemreboot 
 }
 
