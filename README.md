@@ -1,10 +1,10 @@
-### Kalieraser v2.0 
+### Kalieraser v2.1 
 
 ##### Written by: Brainfuck
-##### Version: 2.0 - 19/02/2016
+##### Version: 2.1 - 23/05/2016
 ##### Antiforensics script for security and privacy
 ##### Operative System: Kali Linux 
-##### Description: This tool erase all the system's logs and data of tools in the list, these files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
+##### Description: This program erase all system's logs and data of kali tools, the files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
 
 
 
@@ -21,7 +21,7 @@ apt-get install bleachbit
 
 ##### 2 - Install srm 
 
-##### Secure RM is present in the program folder, you can check the latest version here: http://sourceforge.net/projects/srm/files/, anyway when the new version of srm are released, the git repository will be updated.
+##### Secure RM is already present in the program folder, but if you are paranoid you can install srm from here: http://sourceforge.net/projects/srm/files/. The version of srm in this repository is the latest and when the new version are released the git repository will be updated.
 
 
 ##### Extract and install: 
@@ -34,21 +34,20 @@ cd srm-1.2.15/
 
 make
 
-make install
+sudo make install
 ```
 
 ##### Copy the executable file in /usr/bin directory:
 ```
 cd src/
 
-chmod +x srm
+sudo chmod +x srm
 
-cp srm /usr/bin
+sudo cp srm /usr/bin
 ```
 
 
-
-##### 3 - Start the script  
+##### 3 - Start the script from root  
 
 ##### Chmod and start cleaner:
 ```
@@ -57,18 +56,18 @@ chmod +x kalieraser.sh
 ./kalieraser.sh start 
 ```
 
-##### Print list of supported tools 
-```
-./kalieraser.sh list 
-```
 
+##### Print help menu 
+```
+./kalieraser.sh help
+```
 
 
 #### Note for the users:
 
-##### [!] Please make sure you don't need the logs before run the script, this is not a "magic security tool" and does not absolutely guarantee that data on the drive cannot be recovered, but it goes a long way in making it difficult.
+##### [!] This is not a "magic security tool" and does not absolutely guarantee that data on the drive cannot be recovered, but it goes a long way in making it difficult.
 
-#####  I could not test some tools because it was impossible for me (i.e. the cisco tools).
+#####  I could not insert some tools in the list because it was impossible for me to test all (i.e. the cisco tools and more).
 
 
 ##### References:
