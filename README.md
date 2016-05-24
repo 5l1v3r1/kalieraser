@@ -1,4 +1,4 @@
-### Kalieraser v2.1 
+### Kalieraser 
 
 ##### Written by: Brainfuck
 ##### Version: 2.1 - 23/05/2016
