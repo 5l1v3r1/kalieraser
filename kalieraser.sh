@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Program: kalieraser.sh
+#
 # Version: 2.1 - 23/05/2016
 # Dev: Brainfuck
 # Description: Antiforensics script for security and privacy
 # Operative System: Kali Linux 
 # Dependencies: Bleachbit > http://bleachbit.sourceforge.net
 # Secure RM > http://sourceforge.net/projects/srm/
-#
+
 # GNU GENERAL PUBLIC LICENSE
 #
 # This program is free software: you can redistribute it and/or modify
