@@ -146,7 +146,7 @@ function secure_rm {
 }
 
 
-# emptying the buffers cache (free pagecache, dentries and inodes)
+# emptying the buffers cache (free pagecache, entries and inodes)
 function drop_cache {
 	echo -e "$cyan[info]$green Drop data from RAM$RESETCOLOR\n"
 	sh -c 'echo 3 >/proc/sys/vm/drop_caches'
