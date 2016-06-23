@@ -35,16 +35,6 @@ make
 sudo make install
 ```
 
-##### Copy the executable file in /usr/bin directory:
-```
-cd src/
-
-sudo chmod +x srm
-
-sudo cp srm /usr/bin
-```
-
-
 ##### 3 - Start the script from root  
 
 ##### Chmod and start cleaner:
