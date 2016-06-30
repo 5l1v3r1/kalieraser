@@ -2,7 +2,7 @@
  
 ### Antiforensics script for security and privacy
 ### Operative System: Kali Linux 
-### Description: This program erase all system's logs and data of kali tools, the files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
+### Description: This program erase system's logs and tools data, the files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
 
 
 ### Instructions

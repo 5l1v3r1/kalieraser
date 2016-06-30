@@ -212,8 +212,8 @@ function secure_rm {
 
 	# delete dmesg logs
 	echo -e "$green Delete kernel messages? [Y/n]: $endc" 
-	read -e yno	
-	case $yno in
+	read -p "> " yn	
+	case $yn in
 		[yY]|[y|Y] )
 			dmesg -C
 			sleep 3
@@ -226,8 +226,8 @@ function secure_rm {
 	# bleachbit don't delete "/root/.bash_history" file if you don't run
 	# from sudo, delete with "history -c" command
 	echo -e "$green Delete root bash history? [Y/n]: $endc" 
-	read -e yno	
-	case $yno in
+	read -p "> " yn	
+	case $yn in
 		[yY]|[y|Y] )
 			history -c
 			sleep 1
@@ -254,8 +254,8 @@ function drop_cache {
 # ask for reboot
 function system_reboot {
 	echo -e "$green It is recommended to reboot system, reboot now? [Y/n]: $endc" 
-	read -e yno	
-	case $yno in
+	read -p "> " yn	
+	case $yn in
 		[yY]|[y|Y] )
 			reboot
 			;;
