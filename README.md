@@ -58,6 +58,8 @@ I could not insert some tools in the list because it was impossible for me to te
 
 
 #### References:
-Bleachbit documentation: http://bleachbit.sourceforge.net/
-Secure RM documentation: http://srm.sourceforge.net/
+Bleachbit documentation: http://bleachbit.sourceforge.net
+
+Secure RM documentation: http://srm.sourceforge.net
+
 About secure wiping of media: http://www.destructdata.com/dod-standard/, https://en.wikipedia.org/wiki/Data_erasure
