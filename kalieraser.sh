@@ -4,7 +4,7 @@
 # Version: 2.2 - 29/06/2016
 # Dev: Brainfuck
 # Description: Antiforensics script for security and privacy
-# Operative System: Kali Linux
+# Operating System: Kali Linux
 # Dependencies Bleachbit, Secure RM
 # http://bleachbit.sourceforge.net
 # http://sourceforge.net/projects/srm/
