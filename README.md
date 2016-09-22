@@ -68,6 +68,6 @@ Secure RM documentation: http://srm.sourceforge.net
 
 About secure wiping of media: http://www.destructdata.com/dod-standard/, https://en.wikipedia.org/wiki/Data_erasure
 
-Video demonstration of kalieraser.sh: (https://vimeo.com/183696633)
+Video demonstration of kalieraser: https://vimeo.com/183696633
 
 
