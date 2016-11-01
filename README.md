@@ -1,4 +1,4 @@
-## Kalieraser v2.3.1
+## Kalieraser v2.3.2
  
 ### Antiforensics for security and privacy
 ### Operating System: Kali Linux 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Program: kalieraser.sh
-# Version: 2.3.1 - 2016-10-06
+# Version: 2.3.2 
 # Author: Brainfuck
 # Description: This program erase the system's logs and the tools data, 
 # the files are wiped with Bleachbit (overwrite method) and 
@@ -30,7 +30,7 @@
 
 # program / version
 program="kalieraser"
-version="2.3.1"
+version="2.3.2"
 
 # define colors
 export red=$'\e[0;91m'
@@ -205,8 +205,7 @@ function secure_rm {
 	'*conversations*' '*fragments*' '*.properties' '*.data' '*.keystore'
 	'*.pot' '.0trace-*' '/TLSSLed*/' '/.wapiti/*' 'fimap.log' 'hydra.restore'
 	'/.creepy/*.log/' '.john/sessions/*.log''/.john/*' '/.set/*' '/.msf4/*'
-	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*'
-	
+	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*'	
 	# /var/log/
 	'/var/log/dradis/*' '/var/log/openvas/*.log' '/var/log/openvas/*.gz'
 	'/var/log/openvas/*.dump' '/var/log/openvas/*.messages' '/var/log/*log'
@@ -229,7 +228,6 @@ function secure_rm {
 				# -D, --dod             overwrite with 7 US DoD compliant passes
 				# -r, -R, --recursive   remove the contents of directories
 				srm -i -D -R "$files" 2> /dev/null
-				printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "-" "deleted:" "$files"
 			fi
 		done
 	done
@@ -267,7 +265,7 @@ function secure_rm {
 # emptying the buffers cache (free pagecache, entries and inodes)
 # in other words, drop data from RAM
 function drop_cache {
-	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Drop data from RAM\n"
+	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Drop data from RAM"
 	sh -c 'echo 3 >/proc/sys/vm/drop_caches'
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "-" "RAM empty"
 	sleep 5
