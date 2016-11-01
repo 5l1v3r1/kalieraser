@@ -7,7 +7,6 @@
 
 ### Instructions
 
-
 #### 1 - Install Bleachbit
 ```bash
 sudo apt-get install bleachbit 
