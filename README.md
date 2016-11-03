@@ -1,11 +1,12 @@
-## Kalieraser v2.3.2
+## Kalieraser v2.3.3
  
 ### Antiforensics for security and privacy
 ### Operating System: Kali Linux 
-### Description: This program erase the system's logs and the tools data, the files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
+### Description: This program erase all logs of system and default tools installed on Kali Linux Rolling, the files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
 
 
 ### Instructions
+
 
 #### 1 - Install Bleachbit
 ```bash
