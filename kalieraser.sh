@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Program: kalieraser.sh
-# Version: 2.3.2 
+# Version: 2.3.3 
 # Author: Brainfuck
-# Description: This program erase the system's logs and the tools data, 
-# the files are wiped with Bleachbit (overwrite method) and 
-# Secure RM (7 US DoD compliant passes method)
+# Description: This program erase all logs of system and default 
+# tools installed on Kali Linux Rolling, the files are wiped 
+# with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method)
 # (for all informations please see the file: README.md)
+#
 # Operating System: Kali Linux
 # Dependencies: bleachbit, srm (Secure RM)
 # http://bleachbit.sourceforge.net
@@ -30,7 +31,7 @@
 
 # program / version
 program="kalieraser"
-version="2.3.2"
+version="2.3.3"
 
 # define colors
 export red=$'\e[0;91m'
@@ -63,8 +64,7 @@ function check_root {
 
 
 # backup function
-#################
-
+# ***************
 # backup log files and folders
 function backup_data {
 	banner
@@ -95,34 +95,39 @@ function backup_data {
 
 	# start backup
 	IFS=$'\n'
-	for username in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
-		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Backup logs data of" "$username"
-		cd $username
+	for current_user in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
+		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Backup logs data of" "$current_user"
+		cd $current_user
 		sleep 2
 
 		IFS=$','
 		for files in ${log_folder[@]}; do
 			if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
 				# simple backup with "cp" in /tmp/ directory
-				cp -R "$files" /tmp/backup-logs-$current_date 2> /dev/null
-				printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copied:" "$files"
+				# why cp? because it don't need other dependencies 
+				cp -Rv "$files" /tmp/backup-logs-$current_date 2> /dev/null
+				#printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copied:" "$files"
 			fi
 		done
 	done
 
-	# cd /tmp, compress backup folder with tar,
+	# cd /tmp, compress backup folder with tar (tar.gz),
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Compress backup with tar, please wait..."
 	local tmp_dir
 	tmp_dir='/tmp/'
 	
 	cd $tmp_dir
 	if [ "$?" = "0" ]; then
-		tar -czf backup-logs-$current_date.tar.gz backup-logs-$current_date
+		tar -czvf backup-logs-$current_date.tar.gz backup-logs-$current_date
+		
 		# create folder for backups in /root/ directory
 		mkdir -pv /root/backups
+		
 		# move backup
 		cp -vf backup-logs-$current_date.tar.gz /root/backups
 		sleep 5
+
+		# delete unnecessary archive file
 		rm -Rv backup-logs-*
 		sleep 3
 	else
@@ -130,7 +135,7 @@ function backup_data {
 		exit 1
 	fi
 
-	# encrypt new backup with GnuPG, cipher: AES256
+	# encrypt new backup with GnuPG, cipher algorithm: AES256
 	# gpg -h for more information
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Encrypt backup with GnuPG, cipher AES256"
 	cd /root/backups
@@ -149,8 +154,7 @@ function backup_data {
 
 
 # securely delete functions 
-###########################
-
+# *************************
 # run bleachbit command line interface
 function run_bleachbit {
 	printf "\n${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Starting bleachbit cleaner"
@@ -179,6 +183,7 @@ function run_bleachbit {
 	\ system.recent_documents system.rotated_logs system.tmp system.trash \
 	\ thumbnails.cache thunderbird.cache thunderbird.cookies thunderbird.passwords \
 	\ thunderbird.vacuum vim.history vlc.mru wine.tmp x11.debug_logs xchat.logs
+	
 	sleep 1
 	# real terminal clear 
 	printf "\033c"
@@ -215,9 +220,9 @@ function secure_rm {
 
 	# delete logs
 	IFS=$'\n'
-	for username in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
-		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Deleting logs of" "$username"
-		cd $username
+	for current_user in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
+		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Deleting logs of" "$current_user"
+		cd $current_user
 		sleep 2
 
 		IFS=$','
@@ -292,7 +297,7 @@ function system_reboot {
 
 
 # start the program
-###################
+# *****************
 function start {
 	banner
 	check_root
