@@ -83,5 +83,7 @@ I could not insert some tools in list because it was impossible for me to test a
 #### References:
 About secure wiping of media: 
 http://www.destructdata.com/dod-standard/
+
 https://en.wikipedia.org/wiki/Data_erasure
+
 https://en.wikipedia.org/wiki/Data_remanence
