@@ -2,16 +2,20 @@
 
 # Program: kalieraser.sh
 # Version: 2.3.3 
-# Author: Brainfuck
-# Description: This program erase all logs of system and default 
-# tools installed on Kali Linux Rolling, the files are wiped 
-# with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method)
+# Operating System: Kali Linux 2016.2
+#
+# Description: 
+# 
+# This program wipe out system's logs and the tools data,
+# of Kali Linux OS, files are wiped with Bleachbit (overwrite method) and 
+# Secure RM (7 US DoD compliant passes method)
 # (for all informations please see the file: README.md)
 #
-# Operating System: Kali Linux
 # Dependencies: bleachbit, srm (Secure RM)
 # http://bleachbit.sourceforge.net
 # http://sourceforge.net/projects/srm/
+#
+# Copyright (C) 2015, 2016 Brainfuck
 
 # GNU GENERAL PUBLIC LICENSE
 #
@@ -41,13 +45,17 @@ export cyan=$'\e[0;36m'
 export endc=$'\e[0m'
 
 
-# banner
-function banner {
+# banner, thanks to: http://patorjk.com/
+banner () {
 printf "${white}
- _____     _ _
-|  |  |___| |_|___ ___ ___ ___ ___ ___
-|    -| .'| | | -_|  _| .'|_ -| -_|  _|
-|__|__|__,|_|_|___|_| |__,|___|___|_|
+ _       _ _                         
+| |_ ___| |_|___ ___ ___ ___ ___ ___ 
+| '_| .'| | | -_|  _| .'|_ -| -_|  _|
+|_,_|__,|_|_|___|_| |__,|___|___|_|  
+
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+    
+    |A|n|t|i|-|F|o|r|e|n|s|i|c|s|
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+   
 
 Version: $version
 Author: Brainfuck${endc}\n"
@@ -55,7 +63,7 @@ Author: Brainfuck${endc}\n"
 
 
 # check if the program run as a root
-function check_root {
+check_root () {
 	if [ "$(id -u)" -ne 0 ]; then
 		printf "${red}%s${endc}\n"  "[!] Please run this program as a root!" >&2
 		exit 1
@@ -63,10 +71,22 @@ function check_root {
 }
 
 
-# backup function
-# ***************
+# display program and srm version then exit
+print_version () {
+	printf "${white}%s${endc}\n" "$program $version"
+	printf "${white}%s${endc}\n\n" "$(srm -V)"
+	printf "${white}%s${endc}\n" "Author: Brainfuck"
+	printf "${white}%s${endc}\n" "https://github.com/BrainfuckSec"
+	printf "${white}%s${endc}\n" "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
+	printf "${white}%s${endc}\n" "This is free software: you are free to change and redistribute it."
+	printf "${white}%s${endc}\n" "There is NO WARRANTY, to the extent permitted by law."
+	exit 0
+}
+
+
+# backup function:
 # backup log files and folders
-function backup_data {
+backup_data () {
 	banner
 	check_root
 	printf "\n${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Backup log files and folders"
@@ -74,7 +94,7 @@ function backup_data {
 	local current_date
 	current_date=$(date +%Y-%m-%d)
 
-	# list logs in root and user home directory
+	# list logs in root and users home directory
 	declare -a log_folder=(
 	'/nmap_output/' '/.maltego/*BT/var/cache/*' '/.maltego/*BT/var/log/*'
 	'/.maltego/*CaseFileCE/var/cache/*' '/.maltego/*CaseFileCE/var/cache/*'
@@ -86,122 +106,129 @@ function backup_data {
 	'/.creepy/*.log/' '.john/sessions/*.log''/.john/*' '/.set/*' '/.msf4/*'
 	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*' '/*history/'
 	# /var/log/
-	'/var/log/dradis/*' '/var/log/openvas/*.log' '/var/log/openvas/*.gz'
-	'/var/log/openvas/*.dump' '/var/log/openvas/*.messages' '/var/log/*log'
-	'/var/log/*.1' '/var/log/*.gz' '/var/log/*.old' '/var/log/*.err/'
-	'/var/log/messages' 'var/log/mysql/*.log' '/var/log/mysql/*.gz'
-	'/var/log/postgresql/*.log' '/var/log/wmtp' '/var/log/*.dat' 
-	'/var/log/clamav/*.log');
+	'/var/log/*.log' '/var/log/*log' '/var/log/*.1' '/var/log/*.old' 
+	'/var/log/*.gz' '/var/log/apache2/*.log' '/var/log/chkrootkit/*.log' 
+	'/var/log/clamav/*.log' '/var/log/couchdb/*.log' '/var/log/dradis/*.log' 
+	'/var/log/exim4/*log' '/var/log/exim4/*.1' '/var/log/gdm3/*.log'
+	'/var/log/inetsim/*.log' '/var/log/mysql/*.log' '/var/log/ntpstats/*.log'
+	'/var/log/postgresql/*.log' '/var/log/samba/*.log' '/var/log/speech-dispatcher'
+	'/var/log/stunnel14/*.log' '/var/log/unattended-upgrades/*.log');
 
 	# start backup
 	IFS=$'\n'
-	for current_user in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
-		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Backup logs data of" "$current_user"
-		cd $current_user
+	for username in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
+		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Backup logs data of" "$username"
+		cd $username
 		sleep 2
 
 		IFS=$','
 		for files in ${log_folder[@]}; do
 			if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
 				# simple backup with "cp" in /tmp/ directory
-				# why cp? because it don't need other dependencies 
-				cp -Rv "$files" /tmp/backup-logs-$current_date 2> /dev/null
-				#printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copied:" "$files"
+				cp -R "$files" /tmp/backup-logs-$current_date 2> /dev/null
+				printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copy:" "$files"
 			fi
 		done
 	done
 
-	# cd /tmp, compress backup folder with tar (tar.gz),
+	# cd to directory --> /tmp, 
+	# compress backup folder with tar,
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Compress backup with tar, please wait..."
 	local tmp_dir
 	tmp_dir='/tmp/'
 	
 	cd $tmp_dir
 	if [ "$?" = "0" ]; then
-		tar -czvf backup-logs-$current_date.tar.gz backup-logs-$current_date
-		
+		tar -czf backup-logs-$current_date.tar.gz backup-logs-$current_date
 		# create folder for backups in /root/ directory
 		mkdir -pv /root/backups
-		
 		# move backup
 		cp -vf backup-logs-$current_date.tar.gz /root/backups
 		sleep 5
-
-		# delete unnecessary archive file
-		rm -Rv backup-logs-*
+		# delete unnecessary backup files from /tmp directory
+		# execute command "srm -D -R -v <file/folder>"
+		# -D, --dod             overwrite with 7 US DoD compliant passes
+		# -r, -R, --recursive   remove the contents of directories
+		# -v, --verbose         explain what is being done
+		srm -D -R -v backup-logs-*
 		sleep 3
 	else
 		printf "${red}%s${endc}\n" "[ failed ] An error occurred, please check your configuration"
 		exit 1
 	fi
 
-	# encrypt new backup with GnuPG, cipher algorithm: AES256
+	# cd to directory --> /root/backups
+	# encrypt new backup with GnuPG, cipher: AES256
 	# gpg -h for more information
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Encrypt backup with GnuPG, cipher AES256"
 	cd /root/backups
 	gpg -ca --cipher-algo AES256 backup-logs-$current_date.tar.gz
 	sleep 3
 
-	# remove unnecessary backup files
-	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Backup encrypted, remove old backup files"
-	rm -v backup-logs-$current_date.tar.gz
+	# delete unnecessary backup files from /root/backups directory
+	# execute command "srm -D -R -v <file/folder>"
+	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Backup encrypted, remove unnecessary backup files"
+	srm -D -R -v backup-logs-$current_date.tar.gz
 	sleep 3
 
-	printf "${cyan}%s${endc} ${white}%s${endc}\n" "[ ok ]" "Backup complete:" 
+	printf "${cyan}%s${endc} ${white}%s${endc}\n" "[ OK ]" "Backup complete:" 
 	printf "${cyan}%s${endc} ${white}%s${endc}\n" "path of backup file:" "/root/backups/backups-logs-$current_date.tar.gz.asc"
 	exit 0
 }
 
 
-# securely delete functions 
-# *************************
+# securely wipe out function (1):
 # run bleachbit command line interface
-function run_bleachbit {
+run_bleachbit () {
 	printf "\n${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Starting bleachbit cleaner"
-	sleep 1
+	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "if the output give errors, don't worry,"
+	printf "${green}%s${endc}\n" "bleachbit simply list the applications not installed :)"
+	sleep 5
 
-	# if the output give errors, don't worry, bleachbit simply warning
-	# if the application in this list are not installed :)
-	bleachbit --overwrite --clean apt.autoremove apt.clean bash.history \
-	\ chromium.cache chromium.cookies chromium.dom chromium.form_history \
-	\ chromium.history chromium.passwords chromium.vacuum elinks.history \
-	\ firefox.cache firefox.cookies firefox.dom firefox.crash_reports firefox.dom \
+	bleachbit --overwrite --clean apt.autoremove apt.clean apt.package_lists \
+	\ bash.history chromium.cache chromium.cookies chromium.current_session \
+	\ chromium.dom chromium.form_history chromium.history chromium.passwords \
+	\ chromium.search_engines chromium.vacuum elinks.history filezilla.mru \
+	\ firefox.cache firefox.cookies firefox.crash_reports firefox.dom \
 	\ firefox.download_history firefox.forms firefox.passwords \
 	\ firefox.session_restore firefox.site_preferences firefox.url_history \
 	\ firefox.vacuum flash.cache flash.cookies gedit.recent_documents gimp.tmp \
-	\ gnome.search_history google_chrome.cache google_chrome.cookies \
+	\ grome.run gnome.search_history google_chrome.cache google_chrome.cookies \
 	\ google_chrome.dom google_chrome.form_history google_chrome.history \
-	\ google_chrome.passwords google_chrome.session google_chrome.vacuum \
-	\ google_earth.temporary_files google_toolbar.search_history java.cache \
-	\ kde.cache kde.recent_documents kde.tmp libreoffice.cache libreoffice.history \
-	\ liferea.cache liferea.cookies liferea.vacuum links2.history nautilus.history \
-	\ openofficeorg.cache openofficeorg.recent_documents opera.cache opera.cookies \
-	\ opera.current_session opera.dom opera.download_history opera.passwords \
-	\ opera.search_history opera.url_history pidgin.cache pidgin.logs \
-	\ screenlets.logs skype.chat_logs sqlite3.history system.cache \
+	\ google_chrome.passwords google_chrome.search_engines google_chrome.session \ 
+	\ google_chrome.vacuum google_earth.temporary_files google_toolbar.search_history \
+	\ java.cache kde.cache kde.recent_documents kde.tmp libreoffice.cache \
+	\ libreoffice.history liferea.cache liferea.cookies liferea.vacuum \
+	\ links2.history nautilus.history openofficeorg.cache \
+	\ openofficeorg.recent_documents opera.cache opera.cookies opera.current_session \
+	\ opera.dom opera.download_history opera.passwords opera.search_history \
+	\ opera.url_history pidgin.cache pidgin.logs rhythmbox.cache rhythmbox.history \
+	\ screenlets.logs skype.chat_logs skype.installers sqlite3.history system.cache \
 	\ system.clipboard system.desktop_entry system.localizations \
 	\ system.recent_documents system.rotated_logs system.tmp system.trash \
 	\ thumbnails.cache thunderbird.cache thunderbird.cookies thunderbird.passwords \
-	\ thunderbird.vacuum vim.history vlc.mru wine.tmp x11.debug_logs xchat.logs
-	
+	\ thunderbird.vacuum transmission.blocklists transmission.history \ 
+	\ transmission.torrents vim.history vlc.mru wine.tmp x11.debug_logs xchat.logs
 	sleep 1
 	# real terminal clear 
 	printf "\033c"
 
-	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ ok ]" "Temporary files deleted"
+	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ OK ]" "Temporary files deleted"
 }
 
 
-# delete logs with srm
-function secure_rm {
+# securely wipe out function (2):
+# wipe logs with srm
+run_securerm () {
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Starting secure file deletion with srm, this will take some time..."
 
 	# list logs in root and user home directories
 	# when you start one tool, this tool can create a folder, or, often a hidden folder
 	# with logs and configuration files, this array collect this files and folders
-	# then pass it to next function.
+	# then pass it to the next function.
+	#
+	# list logs in root and users home directory
 	declare -a log_folder=(
-	# files in /home/ 
 	'/nmap_output/' '/.maltego/*BT/var/cache/*' '/.maltego/*BT/var/log/*'
 	'/.maltego/*CaseFileCE/var/cache/*' '/.maltego/*CaseFileCE/var/cache/*'
 	'./chirp/*.log' '*.mtgrx' '/.recon-ng/*' '*.sprt' '/*-tool-output/'
@@ -210,19 +237,21 @@ function secure_rm {
 	'*conversations*' '*fragments*' '*.properties' '*.data' '*.keystore'
 	'*.pot' '.0trace-*' '/TLSSLed*/' '/.wapiti/*' 'fimap.log' 'hydra.restore'
 	'/.creepy/*.log/' '.john/sessions/*.log''/.john/*' '/.set/*' '/.msf4/*'
-	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*'	
+	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*' '/*history/'
 	# /var/log/
-	'/var/log/dradis/*' '/var/log/openvas/*.log' '/var/log/openvas/*.gz'
-	'/var/log/openvas/*.dump' '/var/log/openvas/*.messages' '/var/log/*log'
-	'/var/log/*.1' '/var/log/*.gz' '/var/log/*.old' '/var/log/*.err/'
-	'/var/log/messages' 'var/log/mysql/*.log' '/var/log/mysql/*.gz'
-	'/var/log/postgresql/*.log' '/var/log/wmtp' '/var/log/*.dat');
+	'/var/log/*.log' '/var/log/*log' '/var/log/*.1' '/var/log/*.old' 
+	'/var/log/*.gz' '/var/log/apache2/*.log' '/var/log/chkrootkit/*.log' 
+	'/var/log/clamav/*.log' '/var/log/couchdb/*.log' '/var/log/dradis/*.log' 
+	'/var/log/exim4/*log' '/var/log/exim4/*.1' '/var/log/gdm3/*.log'
+	'/var/log/inetsim/*.log' '/var/log/mysql/*.log' '/var/log/ntpstats/*.log'
+	'/var/log/postgresql/*.log' '/var/log/samba/*.log' '/var/log/speech-dispatcher'
+	'/var/log/stunnel14/*.log' '/var/log/unattended-upgrades/*.log');
 
 	# delete logs
 	IFS=$'\n'
-	for current_user in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
-		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Deleting logs of" "$current_user"
-		cd $current_user
+	for username in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
+		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Deleting logs of" "$username"
+		cd $username
 		sleep 2
 
 		IFS=$','
@@ -236,6 +265,20 @@ function secure_rm {
 			fi
 		done
 	done
+
+	# if one application don't recreate log files, the application may not work correctly
+	# empties the contents of this files with "truncate -s 0 <filename>"
+	# https://unix.stackexchange.com/questions/88808/empty-the-contents-of-a-file
+	# http://man7.org/linux/man-pages/man1/truncate.1.html
+	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Empties critical log files with 'truncate' command"
+	declare -a truncate_file=(
+	'/var/log/apt/history.log' '/var/log/apt/term.log' '/var/log/debug'
+	'/var/log/fsck/checkfs' '/var/log/fsck/checkroot' '/var/log/wtmp');
+
+	for files in ${truncate_file[@]}; do
+		truncate -s 0 "$files" 2> /dev/null
+	done
+	printf "${cyan}%s${endc} ${green}%s${endc}\n" "-" "critical log files empty"
 
 	# delete dmesg logs
 	printf "${green}Delete kernel messages? (dmesg) [Y/n]${endc}"
@@ -269,19 +312,19 @@ function secure_rm {
 
 # emptying the buffers cache (free pagecache, entries and inodes)
 # in other words, drop data from RAM
-function drop_cache {
+drop_cache () {
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Drop data from RAM"
 	sh -c 'echo 3 >/proc/sys/vm/drop_caches'
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "-" "RAM empty"
 	sleep 5
 	printf "\033c"
 
-	printf "${cyan}%s${endc} ${white}%s${endc}\n" "[ ok ]" "All logs and files are securely deleted and your System is clean"
+	printf "${cyan}%s${endc} ${white}%s${endc}\n" "[ OK ]" "All logs and files are securely deleted and your System is clean"
 }
 
 
 # ask for reboot
-function system_reboot {
+system_reboot () {
 	printf "${green}%s${endc}" "It's recommended to reboot system, reboot now? [Y/n]"
 	read -p "${green}:${endc} " yn
 	case $yn in
@@ -296,9 +339,8 @@ function system_reboot {
 }
 
 
-# start the program
-# *****************
-function start {
+# start program
+start_program () {
 	banner
 	check_root
 
@@ -311,27 +353,20 @@ function start {
 	{ printf >&2 "\n${red}%s${endc}\n" "[!] srm isn't installed, exiting..."; exit 1; }
 
 	run_bleachbit
-	secure_rm
+	run_securerm
 	drop_cache
 	system_reboot
 }
 
 
-# display program and srm version then exit
-function print_version {
-	printf "${white}%s${endc}\n" "$program $version"
-	printf "${white}%s${endc}\n" "$(srm -V)"
-	exit 0
-}
-
-
 # print help menu'
-function help_menu {
+help_menu () {
 	banner
 	
-	printf "\n${white}%s${endc}\n\n" "Usage:"
-	printf "${white}%s${endc}${red}%s${endc}${white}%s${endc}${red}%s${endc}\n" "┌─" "$USER" "@" "$(hostname)"
-	printf "${white}%s${endc}${red}%s${endc} ${green}%s${endc}\n" "└─" "➤" "./$program --argument"
+	printf "\n${white}%s${endc}\n" "Usage:"
+	printf "${white}%s${endc}\n\n"     "******"
+	printf "${white}%s${endc}${red}%s${endc}${white}%s${endc}${red}%s${endc}\n" "┌─" "[$USER]" "@" "[$(hostname)]"
+	printf "${white}%s${endc}${red}%s${endc} ${green}%s${endc}\n" "└─" "▶" "./$program --argument"
 
 	printf "\n${white}%s${endc}\n\n" "Arguments:"
 	printf "${green}%s${endc}\n" "--help      show this help message and exit"
@@ -345,7 +380,7 @@ function help_menu {
 # cases user input
 case "$1" in
 	--start)
-		start
+		start_program
 		;;
 	--backup)
 		backup_data
