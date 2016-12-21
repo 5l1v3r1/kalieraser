@@ -80,8 +80,8 @@ chmod +x kalieraser.sh
 I could not insert some tools in list because it was impossible for me to test all (i.e. the cisco tools and others), but you can see updates for new implementations or fork/pull request this repository.
 
 
-#### References:
-About secure wiping of media: 
+#### About secure wiping of media: 
+
 http://www.destructdata.com/dod-standard/
 
 https://en.wikipedia.org/wiki/Data_erasure
