@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Program: kalieraser.sh
-# Version: 2.3.3 
+# Version: 2.4.0
 # Operating System: Kali Linux 2016.2
 #
 # Description: 
@@ -35,7 +35,7 @@
 
 # program / version
 program="kalieraser"
-version="2.3.3"
+version="2.4.0"
 
 # define colors
 export red=$'\e[0;91m'

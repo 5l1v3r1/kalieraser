@@ -1,25 +1,29 @@
-## Kalieraser v2.3.3
+## Kalieraser v2.4.0
  
-### Antiforensics for security and privacy
-### Operating System: Kali Linux 
-### Description: This program erase all logs of system and default tools installed on Kali Linux Rolling, the files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
+#### Anti-Forensics for security and privacy
+#### Operating System: Kali Linux 2016.2
+#### Description: This program wipe out system's logs and the tools data of Kali Linux OS. Files are wiped with Bleachbit (overwrite method) and Secure RM (7 US DoD compliant passes method).
 
 
-### Instructions
+**What is Bleachbit ?**
+BleachBit is a free and open-source disk space cleaner, privacy manager, and computer system optimize, for more information, please read the official website: https://www.bleachbit.org/
 
 
-#### 1 - Install Bleachbit
+**What is srm (Secure RM)?**
+srm is a secure replacement for rm. Unlike the standard rm, it overwrites the data in the target files before unlinking them, for more information, please read the Manual Page: http://srm.sourceforge.net/srm.html 
+
+
+### Configuration
+
+#### Install dependencies:
+
+**Install Bleachbit**
 ```bash
-sudo apt-get install bleachbit 
+sudo apt-get update 
+sudo apt-get install -y bleachbit 
 ```
 
-
-
-#### 2 - Install srm 
-
-##### The latest version of Secure RM is present in the program folder, or you can download srm from sourceforge here: https://sourceforge.net/projects/srm/?source=typ_redirect
-
-##### Extract build and install: 
+**Install srm** 
 ```bash
 tar -zxvf srm-1.2.15.tar.gz
 
@@ -31,20 +35,20 @@ make
 
 sudo make install
 ```
-##### Now, the executable of srm is installed in /usr/local/bin directory, for invoke it alone, type:
+
+Now, the executable of srm is installed in /usr/local/bin directory, for invoke it alone, type:
 ```bash
 srm --help
 ```
 
 
 
-#### 3 - Start the script from root  
 
-##### Chmod and start cleaner:
+### Start program
+
+#### Give permission to executable from root:
 ```bash
 chmod +x kalieraser.sh
-
-./kalieraser.sh --start 
 ```
 
 
@@ -54,15 +58,30 @@ chmod +x kalieraser.sh
 ```
 
 
-#### Note:
-[!] This is not a "magic security tool" and does not absolutely guarantee that data on the drive cannot be recovered, but it goes a long way in making it difficult.
+#### Use --backup argument for backup your files before wiping if you want:
+```bash
+./kalieraser.sh --backup
+```
 
-I could not insert some tools in the list because it was impossible for me to test all (i.e. the cisco tools and more), but you can see updates for new implementations.
+
+#### Start program with --start argument for wipe out:
+```bash
+./kalieraser --start 
+```
+
+
+#### Note:
+[ ! ] This is not a "magic security tool" and does not absolutely guarantee that data on the drive cannot be recovered, but it goes a long way in making it difficult.
+
+[ ! ] The program procedure is irreversible, before start wiping, you can use the "backup" function.
+
+[ ! ] This program is for Kali Linux OS only, do not use it in other operating systems.
+
+I could not insert some tools in list because it was impossible for me to test all (i.e. the cisco tools and others), but you can see updates for new implementations or fork/pull request this repository.
 
 
 #### References:
-Bleachbit documentation: http://bleachbit.sourceforge.net
-
-Secure RM documentation: http://srm.sourceforge.net
-
-About secure wiping of media: http://www.destructdata.com/dod-standard/, https://en.wikipedia.org/wiki/Data_erasure
+About secure wiping of media: 
+http://www.destructdata.com/dod-standard/
+https://en.wikipedia.org/wiki/Data_erasure
+https://en.wikipedia.org/wiki/Data_remanence
