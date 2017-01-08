@@ -119,7 +119,7 @@ backup_data () {
 	local current_date
 	current_date="$(date +%Y-%m-%d)"
 
-	# create backup folders
+	# create backup folders in /tmp
 	mkdir -pv /tmp/backup-logs-$current_date/var_log
 	mkdir -pv /tmp/backup-logs-$current_date/tools_data_root
 	sleep 3
@@ -147,11 +147,13 @@ backup_data () {
 		fi
 	done
 
-
 	# backup users stuff
-	# create backup directory of current user
+	# create backup directory of current user in /tmp
 	mkdir -pv /tmp/backup-logs-$current_date/tools_data_$username
 	
+	# list /home/ directory for every user of the system
+	# /home/user_1
+	# /home/user_2 etc.
 	IFS=$'\n'
 	for username in $(echo -e "$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
 		printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "[ info ]" "Backup files of:" "$username"
@@ -177,7 +179,7 @@ backup_data () {
 	if ! cd $tmp_dir; then
 		printf "${red}%s${endc}\n" "[ failed ] An error occurred, please check your configuration"
 		exit 1
-	fi
+	fi	
 	
 	tar -czf backup-logs-$current_date.tar.gz backup-logs-$current_date
 	
@@ -218,6 +220,7 @@ backup_data () {
 
 
 # securely wipe out function (1):
+# *******************************
 # run bleachbit command line interface
 run_bleachbit () {
 	printf "\n${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Starting bleachbit cleaner"
@@ -258,6 +261,7 @@ run_bleachbit () {
 
 
 # securely wipe out function (2):
+# *******************************
 # wipe logs with srm
 run_securerm () {
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Starting secure file deletion with srm, this will take some time..."
@@ -382,6 +386,7 @@ system_reboot () {
 
 
 # start program
+# *************
 start_program () {
 	banner
 	check_root
