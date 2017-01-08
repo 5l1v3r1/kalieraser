@@ -33,7 +33,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# program / version
+# program name / version
 program="kalieraser"
 version="2.4.0"
 
@@ -43,6 +43,30 @@ export green=$'\e[0;92m'
 export white=$'\e[0;97m'
 export cyan=$'\e[0;36m'
 export endc=$'\e[0m'
+
+# global arrays
+# *************
+# list logs in /var/log/* directories
+declare -a SYSTEM_LOG=(
+'/var/log/*.log' '/var/log/*log' '/var/log/*.1' '/var/log/*.old' 
+'/var/log/*.gz' '/var/log/apache2/*.log' '/var/log/chkrootkit/*.log' 
+'/var/log/clamav/*.log' '/var/log/couchdb/*.log' '/var/log/dradis/*.log' 
+'/var/log/exim4/*log' '/var/log/exim4/*.1' '/var/log/gdm3/*.log'
+'/var/log/inetsim/*.log' '/var/log/mysql/*.log' '/var/log/ntpstats/*.log'
+'/var/log/postgresql/*.log' '/var/log/samba/*.log' '/var/log/speech-dispatcher'
+'/var/log/stunnel14/*.log' '/var/log/unattended-upgrades/*.log');
+
+# list tools data in root and users home directory
+declare -a TOOL_DATA=(
+'/nmap_output/' '/.maltego/*BT/var/cache/*' '/.maltego/*BT/var/log/*'
+'/.maltego/*CaseFileCE/var/cache/*' '/.maltego/*CaseFileCE/var/cache/*'
+'./chirp/*.log' '*.mtgrx' '/.recon-ng/*' '*.sprt' '/*-tool-output/'
+'/.zenmap/*' '/.golismero/*' '/.ZAP/session/*' '/.ZAP/*.log/'
+'/paros/session/*' '*skipfish*' '/.sqlmap/output/*' '/.w3af/tmp/*'
+'*conversations*' '*fragments*' '*.properties' '*.data' '*.keystore'
+'*.pot' '.0trace-*' '/TLSSLed*/' '/.wapiti/*' 'fimap.log' 'hydra.restore'
+'/.creepy/*.log/' '.john/sessions/*.log''/.john/*' '/.set/*' '/.msf4/*'
+'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*' '/*history/');
 
 
 # banner, thanks to: http://patorjk.com/
@@ -64,7 +88,7 @@ Author: Brainfuck${endc}\n"
 
 # check if the program run as a root
 check_root () {
-	if [ "$(id -u)" -ne 0 ]; then
+	if [[ "$(id -u)" -ne 0 ]]; then
 		printf "${red}%s${endc}\n"  "[!] Please run this program as a root!" >&2
 		exit 1
 	fi
@@ -85,6 +109,7 @@ print_version () {
 
 
 # backup function:
+# ****************
 # backup log files and folders
 backup_data () {
 	banner
@@ -92,40 +117,52 @@ backup_data () {
 	printf "\n${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Backup log files and folders"
 
 	local current_date
-	current_date=$(date +%Y-%m-%d)
+	current_date="$(date +%Y-%m-%d)"
 
-	# list logs in root and users home directory
-	declare -a log_folder=(
-	'/nmap_output/' '/.maltego/*BT/var/cache/*' '/.maltego/*BT/var/log/*'
-	'/.maltego/*CaseFileCE/var/cache/*' '/.maltego/*CaseFileCE/var/cache/*'
-	'./chirp/*.log' '*.mtgrx' '/.recon-ng/*' '*.sprt' '/*-tool-output/'
-	'/.zenmap/*' '/.golismero/*' '/.ZAP/session/*' '/.ZAP/*.log/'
-	'/paros/session/*' '*skipfish*' '/.sqlmap/output/*' '/.w3af/tmp/*'
-	'*conversations*' '*fragments*' '*.properties' '*.data' '*.keystore'
-	'*.pot' '.0trace-*' '/TLSSLed*/' '/.wapiti/*' 'fimap.log' 'hydra.restore'
-	'/.creepy/*.log/' '.john/sessions/*.log''/.john/*' '/.set/*' '/.msf4/*'
-	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*' '/*history/'
-	# /var/log/
-	'/var/log/*.log' '/var/log/*log' '/var/log/*.1' '/var/log/*.old' 
-	'/var/log/*.gz' '/var/log/apache2/*.log' '/var/log/chkrootkit/*.log' 
-	'/var/log/clamav/*.log' '/var/log/couchdb/*.log' '/var/log/dradis/*.log' 
-	'/var/log/exim4/*log' '/var/log/exim4/*.1' '/var/log/gdm3/*.log'
-	'/var/log/inetsim/*.log' '/var/log/mysql/*.log' '/var/log/ntpstats/*.log'
-	'/var/log/postgresql/*.log' '/var/log/samba/*.log' '/var/log/speech-dispatcher'
-	'/var/log/stunnel14/*.log' '/var/log/unattended-upgrades/*.log');
+	# create backup folders
+	mkdir -pv /tmp/backup-logs-$current_date/var_log
+	mkdir -pv /tmp/backup-logs-$current_date/tools_data_root
+	sleep 3
+	
+	# backup root stuff
+	printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Backup files of:" "/root"
 
-	# start backup
+	cd /
+
+	IFS=$' '
+	for files in ${SYSTEM_LOG[@]}; do
+		if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
+			# simple backup with "cp" in /tmp/ directory
+			cp -R "$files" /tmp/backup-logs-$current_date/var_log 2> /dev/null
+			printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copy:" "$files"
+		fi
+	done
+
+	IFS=$' '
+	for files in ${TOOL_DATA[@]}; do
+		if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
+			# simple backup with "cp" in /tmp/ directory
+			cp -R "$files" /tmp/backup-logs-$current_date/tools_data_root 2> /dev/null
+			printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copy:" "$files"
+		fi
+	done
+
+
+	# backup users stuff
+	# create backup directory of current user
+	mkdir -pv /tmp/backup-logs-$current_date/tools_data_$username
+	
 	IFS=$'\n'
-	for username in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
-		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Backup logs data of" "$username"
-		cd $username
-		sleep 2
+	for username in $(echo -e "$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
+		printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "[ info ]" "Backup files of:" "$username"
 
-		IFS=$','
-		for files in ${log_folder[@]}; do
+		cd $username
+
+		IFS=$' '
+		for files in ${TOOL_DATA[@]}; do
 			if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
 				# simple backup with "cp" in /tmp/ directory
-				cp -R "$files" /tmp/backup-logs-$current_date 2> /dev/null
+				cp -R "$files" /tmp/backup-logs-$current_date/tools_data_$username 2> /dev/null
 				printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "+" "copy:" "$files"
 			fi
 		done
@@ -137,25 +174,27 @@ backup_data () {
 	local tmp_dir
 	tmp_dir='/tmp/'
 	
-	cd $tmp_dir
-	if [ "$?" = "0" ]; then
-		tar -czf backup-logs-$current_date.tar.gz backup-logs-$current_date
-		# create folder for backups in /root/ directory
-		mkdir -pv /root/backups
-		# move backup
-		cp -vf backup-logs-$current_date.tar.gz /root/backups
-		sleep 5
-		# delete unnecessary backup files from /tmp directory
-		# execute command "srm -D -R -v <file/folder>"
-		# -D, --dod             overwrite with 7 US DoD compliant passes
-		# -r, -R, --recursive   remove the contents of directories
-		# -v, --verbose         explain what is being done
-		srm -D -R -v backup-logs-*
-		sleep 3
-	else
+	if ! cd $tmp_dir; then
 		printf "${red}%s${endc}\n" "[ failed ] An error occurred, please check your configuration"
 		exit 1
 	fi
+	
+	tar -czf backup-logs-$current_date.tar.gz backup-logs-$current_date
+	
+	# create folder for place new backups in /root/ directory
+	mkdir -pv /root/backups
+	# move backup
+	cp -vf backup-logs-$current_date.tar.gz /root/backups
+	sleep 5
+	
+	printf "${cyan}%s${endc} ${green}%s${endc}" "[ info ]" "Remove unnecessary backup files from /tmp directory"
+	# execute command "srm -D -R -v <file/folder>"
+	# -D, --dod             overwrite with 7 US DoD compliant passes
+	# -r, -R, --recursive   remove the contents of directories
+	# -v, --verbose         explain what is being done
+	srm -D -R backup-logs-*
+	printf "${green}%s${endc}\n" " ... Done"
+	sleep 3
 
 	# cd to directory --> /root/backups
 	# encrypt new backup with GnuPG, cipher: AES256
@@ -167,8 +206,9 @@ backup_data () {
 
 	# delete unnecessary backup files from /root/backups directory
 	# execute command "srm -D -R -v <file/folder>"
-	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Backup encrypted, remove unnecessary backup files"
-	srm -D -R -v backup-logs-$current_date.tar.gz
+	printf "${cyan}%s${endc} ${green}%s${endc}" "[ info ]" "Backup encrypted, remove unnecessary backup files from /root directory"
+	srm -D backup-logs-$current_date.tar.gz
+	printf "${green}%s${endc}\n" " ... Done"
 	sleep 3
 
 	printf "${cyan}%s${endc} ${white}%s${endc}\n" "[ OK ]" "Backup complete:" 
@@ -222,40 +262,42 @@ run_bleachbit () {
 run_securerm () {
 	printf "${cyan}%s${endc} ${green}%s${endc}\n" "[ info ]" "Starting secure file deletion with srm, this will take some time..."
 
-	# list logs in root and user home directories
-	# when you start one tool, this tool can create a folder, or, often a hidden folder
-	# with logs and configuration files, this array collect this files and folders
-	# then pass it to the next function.
-	#
-	# list logs in root and users home directory
-	declare -a log_folder=(
-	'/nmap_output/' '/.maltego/*BT/var/cache/*' '/.maltego/*BT/var/log/*'
-	'/.maltego/*CaseFileCE/var/cache/*' '/.maltego/*CaseFileCE/var/cache/*'
-	'./chirp/*.log' '*.mtgrx' '/.recon-ng/*' '*.sprt' '/*-tool-output/'
-	'/.zenmap/*' '/.golismero/*' '/.ZAP/session/*' '/.ZAP/*.log/'
-	'/paros/session/*' '*skipfish*' '/.sqlmap/output/*' '/.w3af/tmp/*'
-	'*conversations*' '*fragments*' '*.properties' '*.data' '*.keystore'
-	'*.pot' '.0trace-*' '/TLSSLed*/' '/.wapiti/*' 'fimap.log' 'hydra.restore'
-	'/.creepy/*.log/' '.john/sessions/*.log''/.john/*' '/.set/*' '/.msf4/*'
-	'/.wireshark/*' '/.faraday/logs/*' '/.armitage/*' '/.weevely/*' '/*history/'
-	# /var/log/
-	'/var/log/*.log' '/var/log/*log' '/var/log/*.1' '/var/log/*.old' 
-	'/var/log/*.gz' '/var/log/apache2/*.log' '/var/log/chkrootkit/*.log' 
-	'/var/log/clamav/*.log' '/var/log/couchdb/*.log' '/var/log/dradis/*.log' 
-	'/var/log/exim4/*log' '/var/log/exim4/*.1' '/var/log/gdm3/*.log'
-	'/var/log/inetsim/*.log' '/var/log/mysql/*.log' '/var/log/ntpstats/*.log'
-	'/var/log/postgresql/*.log' '/var/log/samba/*.log' '/var/log/speech-dispatcher'
-	'/var/log/stunnel14/*.log' '/var/log/unattended-upgrades/*.log');
+	# delete root stuff
+	printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Deleting logs of:" "/root"
 
-	# delete logs
+	cd /
+
+	IFS=$' '
+	for files in ${SYSTEM_LOG[@]}; do
+		if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
+			# execute command "srm -i -D -R <file/folder>"
+			# -i, --interactive     prompt before any removal
+			# -D, --dod             overwrite with 7 US DoD compliant passes
+			# -r, -R, --recursive   remove the contents of directories
+			srm -i -D -R "$files" 2> /dev/null
+		fi
+	done
+
+	IFS=$' '
+	for files in ${TOOL_DATA[@]}; do
+		if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
+			# execute command "srm -i -D -R <file/folder>"
+			# -i, --interactive     prompt before any removal
+			# -D, --dod             overwrite with 7 US DoD compliant passes
+			# -r, -R, --recursive   remove the contents of directories
+			srm -i -D -R "$files" 2> /dev/null
+		fi
+	done
+
+	# delete users stuff
 	IFS=$'\n'
-	for username in $(printf "/root/\n$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
-		printf "${cyan}%s${endc} ${green}%s${endc} ${red}%s${endc}\n" "[ info ]" "Deleting logs of" "$username"
-		cd $username
-		sleep 2
+	for username in $(echo -e "$(ls /home/ | sed -e 's_^_/home/_' -e 's_$_/_')"); do
+		printf "${cyan}%s${endc} ${green}%s${endc} ${white}%s${endc}\n" "[ info ]" "Deletings log of:" "$username"
 
-		IFS=$','
-		for files in ${log_folder[@]}; do
+		cd $username
+
+		IFS=$' '
+		for files in ${TOOL_DATA[@]}; do
 			if [ "$(ls -A "$files" 2> /dev/null | wc -l)" -gt 0 ]; then
 				# execute command "srm -i -D -R <file/folder>"
 				# -i, --interactive     prompt before any removal
