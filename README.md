@@ -1,4 +1,4 @@
-## Kalieraser v2.4.0
+## Kalieraser v2.4.1
  
 #### Anti-Forensics for security and privacy
 #### Operating System: Kali Linux 2016.2
